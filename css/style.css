@@ -1,0 +1,92 @@
+/* Festive Theme System: Light and Dark Christmas Themes */
+body {
+	font-family: 'Segoe UI', Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background: #f2f7fa;
+	color: #2d2d2d;
+	transition: background 0.7s, color 0.7s;
+}
+
+body.theme-dark {
+	background: #1a2233 url('../assets/night_snow_bg.jpg') repeat;
+	color: #e0e6f7;
+}
+
+header, footer {
+	background: #c62828;
+	color: #fff;
+	padding: 1em;
+	text-align: center;
+	transition: background 0.7s, color 0.7s;
+}
+
+body.theme-dark header, body.theme-dark footer {
+	background: #263159;
+	color: #fffbe7;
+}
+
+.board {
+	position: relative;
+	width: 320px;
+	height: 320px;
+	margin: 2em auto;
+	background: #fff url('../assets/board_bg.png') center/cover no-repeat;
+	border-radius: 16px;
+	box-shadow: 0 4px 24px rgba(44,44,44,0.15);
+	transition: background 0.7s;
+}
+body.theme-dark .board {
+	background: #222 url('../assets/board_bg_dark.png') center/cover no-repeat;
+}
+
+.tile {
+	position: absolute;
+	width: 76px;
+	height: 76px;
+	margin: 2px;
+	border-radius: 10px;
+	background-size: cover;
+	background-position: center;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+	cursor: pointer;
+	transition: transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.3s;
+}
+.tile:active {
+	box-shadow: 0 0 0 2px #ffd700, 0 2px 8px rgba(0,0,0,0.12);
+}
+.tile.empty {
+	background: none;
+	box-shadow: none;
+	cursor: default;
+}
+
+/* Timer, move counter, and UI */
+#game-ui {
+	text-align: center;
+	margin-bottom: 1.5em;
+}
+#timer, #move-counter {
+	font-size: 1.2em;
+	margin: 0 1em;
+	font-weight: bold;
+}
+#reset-btn, #newgame-btn, .start-btn {
+	background: #388e3c;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 0.5em 1.2em;
+	margin: 0.5em;
+	font-size: 1em;
+	cursor: pointer;
+	transition: background 0.3s;
+}
+#reset-btn:hover, #newgame-btn:hover, .start-btn:hover {
+	background: #43a047;
+}
+
+/* Theme transition animation */
+body, header, footer, .board {
+	transition: background 0.7s, color 0.7s;
+}

@@ -2,7 +2,7 @@
 
 Welcome to Santa's Adaptive Christmas Fifteen Puzzle! This is a festive, web-based sliding puzzle game where you can challenge yourself, unlock achievements, and enjoy a bit of holiday magic—all while helping Santa in his workshop.
 
-## What Makes This Game Special?
+## 🎄 What Makes This Game Special?
 - **Classic 4x4 Puzzle:** Slide image tiles (not just numbers!) to complete a cheerful Christmas scene.
 - **Festive Themes:** Switch between a cozy light Christmas look and a magical dark winter night.
 - **Smooth Animations:** Tiles glide and UI elements transition for a polished, modern feel.
@@ -13,7 +13,7 @@ Welcome to Santa's Adaptive Christmas Fifteen Puzzle! This is a festive, web-bas
 - **User Profiles:** Register and log in to save your progress, theme, and rewards.
 - **Secure Backend:** All data is handled safely with PHP and MySQL (using prepared statements).
 
-##  Project Structure (What’s in the Box)
+## 📁 Project Structure (What’s in the Box)
 ```
 Santa's_Adaptive_Christmas/
 ├── api/         # All the PHP endpoints (game sessions, login, achievements, etc.)
@@ -30,7 +30,7 @@ Santa's_Adaptive_Christmas/
 ```
 
 
-##  How to Get Started (Run Locally)
+## 🚀 How to Get Started (Run Locally)
 
 **Important:** MySQL is not set up by default! You must create the database and tables before the app will work.
 
@@ -47,16 +47,15 @@ Santa's_Adaptive_Christmas/
    - Go to [http://localhost/Santa's_Adaptive_Christmas/index.php](http://localhost/Santa's_Adaptive_Christmas/index.php)
 6. **Register, log in, and enjoy the game!**
 
-## What’s Working So Far
+## ✅ What’s Working So Far
 - All the backend logic (PHP, MySQL, sessions, API endpoints)
 - The core puzzle engine and adaptive difficulty
 - Theme system, power-ups, achievements, and story mode
 - Basic UI and navigation
 
-##  What’s Coming Next (UI/UX Polish)
+## ✨ What’s Coming Next (UI/UX Polish)
 - Finalize the style guide and color palette
 - Make it look great on phones and tablets
 - Add more holiday animations (like snowfall and win celebrations)
 - Create wireframes and docs for the team
-
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($title) ? $title : "Santa's Adaptive Christmas Fifteen Puzzle" ?></title>
+    <title>Santa's Adaptive Christmas Fifteen Puzzle</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -19,26 +19,30 @@
     <button id="music-toggle" class="music-btn" title="Toggle Music">🔊</button>
     <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="15" title="Volume Control">
 </div>
-
 <header>
     <div class="snowfall"></div>
     <h1>🎅 Santa's Adaptive Christmas Fifteen Puzzle 🎄</h1>
     <nav>
-        <a href="index.php">🏠 Home</a> |
-        <a href="game.php">🎮 Play</a>
+        <a href="index_demo.html">🏠 Home</a> |
+        <a href="game_demo.html">🎮 Play</a>
         <button id="theme-toggle" style="float:right;margin-left:2em;">🌙 Switch Theme</button>
     </nav>
 </header>
-
+<main>
+    <h1>❄️ Welcome to Santa's Workshop! ❄️</h1>
+    <p>🎁 Challenge yourself with this festive sliding puzzle game. Register, log in, or jump straight into play mode! 🎁</p>
+    <div class="decoration">🎄 ⛄ 🎄 ⛄ 🎄</div>
+    <a href="game_demo.html" class="start-btn">🚀 Start Game 🚀</a>
+    <div class="decoration">🔔 🎅 🦌 🎅 🔔</div>
+</main>
+<footer>
+    <p>&copy; 2025 Santa's Workshop. All rights reserved.</p>
+</footer>
+</body>
 <script>
-// Theme toggle logic and Background Music Control
+// Theme toggle logic
 document.addEventListener('DOMContentLoaded', function() {
     const btn = document.getElementById('theme-toggle');
-    const bgMusic = document.getElementById('bg-music');
-    const musicToggle = document.getElementById('music-toggle');
-    const volumeSlider = document.getElementById('volume-slider');
-    
-    // Theme toggle
     function setTheme(theme) {
         document.body.classList.toggle('theme-dark', theme === 'dark');
         localStorage.setItem('theme', theme);
@@ -51,12 +55,23 @@ document.addEventListener('DOMContentLoaded', function() {
         setTheme(newTheme);
         btn.textContent = newTheme === 'dark' ? '☀️ Light Theme' : '🌙 Switch Theme';
     };
+});
+
+// Background Music Control
+document.addEventListener('DOMContentLoaded', function() {
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggle = document.getElementById('music-toggle');
+    const volumeSlider = document.getElementById('volume-slider');
     
-    // Background Music Control
+    // Try to autoplay music
     bgMusic.volume = 0.15; // Set volume to 15% (quieter background music)
     bgMusic.play().catch(() => {
+        // If autoplay fails, music will start on user interaction
         console.log('Autoplay prevented. Music will start on user click.');
     });
+    
+    // Update music button text
+    musicToggle.textContent = '🔊';
     
     // Toggle music on/off
     musicToggle.onclick = function() {
@@ -94,3 +109,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+</html>

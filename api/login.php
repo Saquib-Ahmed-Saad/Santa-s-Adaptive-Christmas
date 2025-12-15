@@ -1,20 +1,80 @@
 <?php
-// User login endpoint
+session_start();
 require_once '../includes/db.php';
-require_once '../includes/session.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$error = '';
+$success = $_SESSION['success_message'] ?? '';
+unset($_SESSION['success_message']);
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    $stmt = $pdo->prepare('SELECT user_id, password_hash FROM users WHERE username = ?');
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
-    if ($user && password_verify($password, $user['password_hash'])) {
-        $_SESSION['user_id'] = $user['user_id'];
-        echo json_encode(['status' => 'success']);
-        exit;
+    
+    if (empty($username) || empty($password)) {
+        $error = "Please enter both username and password";
+    } else {
+        $stmt = $conn->prepare("SELECT user_id, username, password FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
+            
+            if (password_verify($password, $user['password'])) {
+                // Update last login
+                $update_stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                $update_stmt->bind_param("i", $user['user_id']);
+                $update_stmt->execute();
+                $update_stmt->close();
+                
+                // Set session variables
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['logged_in'] = true;
+                
+                header("Location: ../index.php");
+                exit;
+            } else {
+                $error = "Invalid username or password";
+            }
+        } else {
+            $error = "Invalid username or password";
+        }
+        $stmt->close();
     }
-    echo json_encode(['status' => 'error', 'message' => 'Invalid credentials.']);
-    exit;
 }
-echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
+
+include '../includes/header.php';
+?>
+
+<div class="container">
+    <h2>Login</h2>
+    
+    <?php if ($success): ?>
+        <p class="success"><?= htmlspecialchars($success) ?></p>
+    <?php endif; ?>
+    
+    <?php if ($error): ?>
+        <p class="error"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
+    
+    <form method="POST" action="">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" 
+                   value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <button type="submit" class="btn">Login</button>
+    </form>
+    
+    <p>Don't have an account? <a href="register.php">Register here</a></p>
+</div>
+
+<?php include 'includes/footer.php'; ?>

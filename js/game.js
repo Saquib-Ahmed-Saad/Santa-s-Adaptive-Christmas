@@ -115,7 +115,7 @@ function renderBoard() {
     
     boardDiv.style.width = `${boardSize}px`;
     boardDiv.style.height = `${boardSize}px`;
-    
+    //Loop for coordinating tile positions and sizing
     for (let r = 0; r < BOARD_SIZE; r++) {
         for (let c = 0; c < BOARD_SIZE; c++) {
             const tile = board[r][c];
@@ -199,7 +199,7 @@ function moveTile(row, col) {
         onWin();
     }
 }
-
+//Function for moving tile during game
 function onTileClick(e) {
     const row = parseInt(e.target.dataset.row);
     const col = parseInt(e.target.dataset.col);

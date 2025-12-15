@@ -1,9 +1,9 @@
 // Santa's Adaptive Christmas Fifteen Puzzle - Core Puzzle Engine
 // Step 2: Board logic, rendering, movement, win check
 
-const BOARD_SIZE = 4;
+let BOARD_SIZE = 3; // Dynamic board size
 let board = [];
-let emptyTile = { row: 3, col: 3 };
+let emptyTile = { row: 2, col: 2 }; // Will be adjusted based on BOARD_SIZE
 let moveCount = 0;
 let timer = 0;
 let timerInterval = null;
@@ -14,13 +14,13 @@ let miracleLives = 2; // Christmas Miracle power-up uses
 let puzzleImagePath = "assets/stage1.png"; // default; supports .png or .jpg
 let imageLoaded = false;
 
-// Stage configuration: difficulty + power-up availability
+// Stage configuration: difficulty + power-up availability + grid size
 const STAGE_CONFIG = {
-    1: { difficulty: 'easy', hints: 'full', freeze: true, shuffleDepth: 20 },
-    2: { difficulty: 'normal', hints: 'reduced', freeze: true, shuffleDepth: 80 },
-    3: { difficulty: 'hard', hints: 'few', freeze: true, shuffleDepth: 150 },
-    4: { difficulty: 'hard', hints: 'minimal', freeze: true, shuffleDepth: 220 },
-    5: { difficulty: 'hard', hints: 'none', freeze: false, shuffleDepth: 300 }
+    1: { difficulty: 'easy', gridSize: 3, hints: 'full', freeze: true, shuffleDepth: 20 },
+    2: { difficulty: 'normal', gridSize: 4, hints: 'reduced', freeze: true, shuffleDepth: 80 },
+    3: { difficulty: 'hard', gridSize: 4, hints: 'few', freeze: true, shuffleDepth: 150 },
+    4: { difficulty: 'hard', gridSize: 5, hints: 'minimal', freeze: true, shuffleDepth: 220 },
+    5: { difficulty: 'hard', gridSize: 5, hints: 'none', freeze: false, shuffleDepth: 300 }
 };
 
 // Stage story content for inline results
@@ -47,10 +47,11 @@ const STAGE_STORY = {
     }
 };
 
-// Initialize board with image tiles (0-14), 15 is empty, then shuffle to solvable state
+// Initialize board with image tiles (0 to BOARD_SIZE²-2), empty is last, then shuffle to solvable state
 function initBoard() {
     let tiles = [];
-    for (let i = 0; i < BOARD_SIZE * BOARD_SIZE - 1; i++) {
+    const totalTiles = BOARD_SIZE * BOARD_SIZE;
+    for (let i = 0; i < totalTiles - 1; i++) {
         tiles.push(i);
     }
     tiles.push(null); // empty tile
@@ -102,26 +103,36 @@ function isSolvable(tiles) {
     }
 }
 
-// Render board as image tiles
+// Render board as image tiles with dynamic sizing
 function renderBoard() {
     const boardDiv = document.getElementById('game-board');
     boardDiv.innerHTML = '';
     boardDiv.className = 'board';
+    
+    // Calculate tile and board size based on BOARD_SIZE
+    const tileSize = Math.max(40, Math.min(80, 240 / BOARD_SIZE)); // Responsive tile sizing
+    const boardSize = tileSize * BOARD_SIZE + (BOARD_SIZE - 1) * 4; // Include 2px margins
+    
+    boardDiv.style.width = `${boardSize}px`;
+    boardDiv.style.height = `${boardSize}px`;
+    
     for (let r = 0; r < BOARD_SIZE; r++) {
         for (let c = 0; c < BOARD_SIZE; c++) {
             const tile = board[r][c];
             const tileDiv = document.createElement('div');
             tileDiv.className = tile === null ? 'tile empty' : 'tile';
-            tileDiv.style.left = `${c * 80}px`;
-            tileDiv.style.top = `${r * 80}px`;
+            tileDiv.style.left = `${c * (tileSize + 4)}px`;
+            tileDiv.style.top = `${r * (tileSize + 4)}px`;
+            tileDiv.style.width = `${tileSize}px`;
+            tileDiv.style.height = `${tileSize}px`;
             if (tile !== null) {
                 if (imageLoaded) {
                     // Single image slicing: use puzzleImagePath and set background position
                     tileDiv.style.backgroundImage = `url('${puzzleImagePath}')`;
-                    tileDiv.style.backgroundSize = `${BOARD_SIZE * 80}px ${BOARD_SIZE * 80}px`;
+                    tileDiv.style.backgroundSize = `${boardSize}px ${boardSize}px`;
                     const sr = Math.floor(tile / BOARD_SIZE);
                     const sc = tile % BOARD_SIZE;
-                    tileDiv.style.backgroundPosition = `${-sc * 80}px ${-sr * 80}px`;
+                    tileDiv.style.backgroundPosition = `${-sc * (tileSize + 4)}px ${-sr * (tileSize + 4)}px`;
                 } else {
                     // Fallback: show tile number with a festive background
                     tileDiv.style.background = '#1f2a44';
@@ -198,9 +209,11 @@ function onTileClick(e) {
 // Check for win
 function checkWin() {
     let count = 0;
+    const lastRow = BOARD_SIZE - 1;
+    const lastCol = BOARD_SIZE - 1;
     for (let r = 0; r < BOARD_SIZE; r++) {
         for (let c = 0; c < BOARD_SIZE; c++) {
-            if (r === 3 && c === 3) return board[r][c] === null;
+            if (r === lastRow && c === lastCol) return board[r][c] === null;
             if (board[r][c] !== count) return false;
             count++;
         }
@@ -223,12 +236,19 @@ function onWin() {
     if (currentDifficulty === 'hard') unlockAchievement("Santa's Apprentice");
     alert('Congratulations! You solved the puzzle!');
     // Persist last result locally for results page
+    // Convert relative path to absolute URL for server compatibility
+    let imagePath = puzzleImagePath;
+    if (!imagePath.startsWith('http') && !imagePath.startsWith('/')) {
+        // Get the directory of the current page and construct absolute path
+        const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        imagePath = currentDir + '/' + imagePath;
+    }
     localStorage.setItem('lastResult', JSON.stringify({
         time: timer,
         moves: moveCount,
         difficulty: currentDifficulty,
         stage: currentStage,
-        image: puzzleImagePath
+        image: imagePath
     }));
     const redirectToResults = () => {
         if (location.pathname.endsWith('game_demo.html')) {
@@ -301,6 +321,8 @@ function startGame() {
         puzzleImagePath = resolvedPath;
         const cfg = STAGE_CONFIG[currentStage];
         currentDifficulty = cfg.difficulty;
+        // Set board size based on stage configuration
+        BOARD_SIZE = cfg.gridSize;
         // Reset Christmas Miracle lives at start of each game
         miracleLives = 2;
         updateMiracleLives();

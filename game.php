@@ -1,11 +1,20 @@
 <?php
 // game.php - Main game page
 session_start();
+
+// Require login to play
+if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+    $_SESSION['error_message'] = "Please login to play the game.";
+    header("Location: api/login.php");
+    exit;
+}
+
 $title = "Play - Santa's Adaptive Christmas Fifteen Puzzle";
 include 'includes/header.php';
 ?>
 <main>
     <div class="decoration">🎄 ⛄ 🎄</div>
+    <h2 style="text-align:center;margin-bottom:1em;">Welcome, <?= htmlspecialchars($_SESSION['username']) ?>! 🎮</h2>
     <div id="game-board"></div>
     <div id="game-ui">
         <span id="timer">⏱️ 00:00</span>
@@ -14,8 +23,10 @@ include 'includes/header.php';
         <div style="margin-top: 1.5em;">
             <button id="reset-btn">🔄 Reset</button>
             <button id="newgame-btn">✨ New Game</button>
-            <button id="miracle-btn">🎄 Christmas Miracle</button>
-            <span id="miracle-lives" style="margin-left:0.5em;">❤️ 2</span>
+            <span style="display:inline-block; white-space:nowrap;">
+                <button id="miracle-btn">🎄 Christmas Miracle</button>
+                <span id="miracle-lives" style="margin-left:0.5em;">❤️ 2</span>
+            </span>
             <button id="freeze-btn">❄️ Freeze Timer</button>
             <button id="shuffle-btn">🔀 Mini Shuffle</button>
             <button id="solve-btn">✅ Solve Automatically</button>

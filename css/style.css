@@ -250,15 +250,18 @@ body.theme-dark .results-card {
 }
 .results-story h3 { margin-bottom: 0.4em; }
 
-.results-image {
+.results-image,
+#solved-image {
 	width: 320px;
 	height: 320px;
 	margin: 1em auto;
 	border-radius: 12px;
 	background: #222 center/cover no-repeat;
+	background-size: cover;
 	box-shadow: 0 6px 16px rgba(0,0,0,0.25);
 }
-body.theme-dark .results-image { background-color: #111; }
+body.theme-dark .results-image,
+body.theme-dark #solved-image { background-color: #111; }
 
 /* Theme transition animation */
 body, header, footer, .board {

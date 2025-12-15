@@ -2,9 +2,10 @@
 session_start();
 require_once '../includes/db.php';
 
-$error = '';
+$error = $_SESSION['error_message'] ?? '';
 $success = $_SESSION['success_message'] ?? '';
 unset($_SESSION['success_message']);
+unset($_SESSION['error_message']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username'] ?? '');
@@ -13,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($username) || empty($password)) {
         $error = "Please enter both username and password";
     } else {
-        $stmt = $conn->prepare("SELECT user_id, username, password FROM users WHERE username = ?");
+        $stmt = $conn->prepare("SELECT user_id, username, password_hash FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -21,12 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
             
-            if (password_verify($password, $user['password'])) {
-                // Update last login
-                $update_stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
-                $update_stmt->bind_param("i", $user['user_id']);
-                $update_stmt->execute();
-                $update_stmt->close();
+            if (password_verify($password, $user['password_hash'])) {
                 
                 // Set session variables
                 $_SESSION['user_id'] = $user['user_id'];
@@ -45,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+$base_path = '../';
 include '../includes/header.php';
 ?>
 
@@ -77,4 +74,4 @@ include '../includes/header.php';
     <p>Don't have an account? <a href="register.php">Register here</a></p>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

@@ -68,7 +68,24 @@ document.getElementById('result-time').textContent = lastResult.time !== undefin
 document.getElementById('result-moves').textContent = lastResult.moves !== undefined ? lastResult.moves : '0';
 document.getElementById('result-difficulty').textContent = lastResult.difficulty || 'Normal';
 if (lastResult.image) {
-    document.getElementById('solved-image').style.backgroundImage = `url('${lastResult.image}')`;
+    const solvedImage = document.getElementById('solved-image');
+    // Ensure proper image loading with error handling
+    const img = new Image();
+    img.onload = function() {
+        solvedImage.style.backgroundImage = `url('${lastResult.image}')`;
+        solvedImage.style.backgroundSize = 'cover';
+        solvedImage.style.backgroundPosition = 'center';
+    };
+    img.onerror = function() {
+        console.warn('Image failed to load:', lastResult.image);
+        solvedImage.style.background = '#333';
+        solvedImage.style.display = 'flex';
+        solvedImage.style.alignItems = 'center';
+        solvedImage.style.justifyContent = 'center';
+        solvedImage.style.color = '#fff';
+        solvedImage.textContent = '🖼️ Image not found';
+    };
+    img.src = lastResult.image;
 }
 
 // Display all story segments at once

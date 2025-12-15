@@ -1,21 +1,25 @@
 <?php
-// Database connection configuration
-$host = "localhost";
-$user = "pantherID";
-$pass = "your_password";
-$dbname = "pantherID";
+// Database connection using PDO
+$host = 'localhost';
+$db   = 'sahmed87';
+$user = 'sahmed87';
+$pass = 'sahmed87';
+$charset = 'utf8mb4';
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+   die("DB Connection Failed: " . $e->getMessage());
+}
 
-// Create MySQLi connection
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-// Check connection
+// MySQLi connection (for compatibility with login/register pages)
+$conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
-// Set charset to utf8mb4 for proper character handling
-$conn->set_charset("utf8mb4");
-
-// debugging
-echo "Connected successfully to MySQL server version: " . $conn->server_info;
-?>
+$conn->set_charset($charset);

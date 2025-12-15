@@ -7,7 +7,6 @@ $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username'] ?? '');
-    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     
@@ -16,12 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors[] = "Username is required";
     } elseif (strlen($username) < 3) {
         $errors[] = "Username must be at least 3 characters";
-    }
-    
-    if (empty($email)) {
-        $errors[] = "Email is required";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Invalid email format";
     }
     
     if (empty($password)) {
@@ -34,15 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors[] = "Passwords do not match";
     }
     
-    // Check if username or email already exists
+    // Check if username already exists
     if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT user_id FROM users WHERE username = ? OR email = ?");
-        $stmt->bind_param("ss", $username, $email);
+        $stmt = $conn->prepare("SELECT user_id FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
         
         if ($result->num_rows > 0) {
-            $errors[] = "Username or email already exists";
+            $errors[] = "Username already exists";
         }
         $stmt->close();
     }
@@ -50,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Insert new user
     if (empty($errors)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $email, $hashed_password);
+        $stmt = $conn->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username, $hashed_password);
         
         if ($stmt->execute()) {
             $success = "Registration successful! You can now login.";
@@ -65,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+$base_path = '../';
 include '../includes/header.php';
 ?>
 
@@ -84,12 +78,6 @@ include '../includes/header.php';
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" 
                    value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" 
-                   value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
         </div>
         
         <div class="form-group">

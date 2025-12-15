@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? htmlspecialchars($title) : "Math Game - Project 3" ?></title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?= isset($base_path) ? $base_path : '' ?>css/style.css">
 </head>
 <body>
 
 <!-- Background Music (Optional - can be removed if not needed) -->
 <audio id="bg-music" loop>
-    <source src="assets/background.mp3" type="audio/mpeg">
+    <source src="<?= isset($base_path) ? $base_path : '' ?>assets/christmas.mp3" type="audio/mpeg">
 </audio>
 
 <!-- Music Control Button -->
@@ -22,15 +22,15 @@
 <header>
         <h1>🎅 Santa's Adaptive Christmas Fifteen Puzzle 🎄</h1>    <nav>
         <div class="nav-container">
-            <a href="index.php" class="logo">🏠 Home</a>
+            <a href="<?= isset($base_path) ? $base_path : '' ?>index.php" class="logo">🏠 Home</a>
             <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
                 <span style="margin-left:20px;">Welcome, <strong><?= htmlspecialchars($_SESSION['username']) ?></strong>!</span>
-                <a href="game.php">🎮 Play Game</a>
-                <a href="achievements.php">🏆 Achievements</a>
-                <a href="logout.php">🚪 Logout</a>
+                <a href="<?= isset($base_path) ? $base_path : '' ?>game.php">🎮 Play Game</a>
+                <a href="<?= isset($base_path) ? $base_path : '' ?>achievements.php">🏆 Achievements</a>
+                <a href="<?= isset($base_path) ? $base_path : '' ?>api/logout.php">🚪 Logout</a>
             <?php else: ?>
-                <a href="login.php">🔑 Login</a>
-                <a href="register.php">📝 Register</a>
+                <a href="<?= isset($base_path) ? $base_path : '' ?>api/login.php">🔑 Login</a>
+                <a href="<?= isset($base_path) ? $base_path : '' ?>api/register.php">📝 Register</a>
             <?php endif; ?>
             <button id="theme-toggle" style="float:right;margin-left:2em;">🌙 Dark Mode</button>
         </div>

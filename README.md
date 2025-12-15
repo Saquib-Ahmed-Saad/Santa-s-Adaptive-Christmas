@@ -53,6 +53,28 @@ Santa's_Adaptive_Christmas/
 - Theme system, power-ups, achievements, and story mode
 - Basic UI and navigation
 
+## Deployment 
+- Can be hosted locally, but is also hosted on codd.cs.gsu.edu server 
+- Employs:
+ - Server side php
+ - javascript 
+ - html 
+ - SQL through MySQL and Mariadb 
+ - CSS
+ - APIs
+ - And a list of images in format 
+- Users are prompted to login on index.php
+- Info and progess is stored and queried in databases 
+- We used XAMPP with Apache, PHP, and MySQL to develop the project locally
+- We used FileZilla to upload files to codd and PuTTY to run SQL scripts in the server's MySQL environment
+
+
+## Quality Assurance
+- We checked to see if every puzzle could be solved by doing random generations over and over and checking the inversion rules. 
+- We tested the edge cases of move validation to make sure that only tiles next to each other can move and that quick clicks don't mess up the board state. 
+- We tested win detection on all grid sizes that are supported.
+- We checked the accuracy of the database by comparing the stored session stats with the actual gameplay results. 
+- Event triggers and SQL aggregation results were both used to test achievement logic.
 
 
 
